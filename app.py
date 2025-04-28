@@ -1,3 +1,4 @@
+import os
 import streamlit as st
 import cv2
 import mediapipe as mp
@@ -6,19 +7,29 @@ import time
 import threading
 import pygame
 
+# Check if running on Streamlit Cloud
+IS_DEPLOY = os.environ.get('STREAMLIT_SERVER_RUN_ON_SAVE', None) is not None
 
-# 1. First Command
+# Setup Streamlit page FIRST
 st.set_page_config(page_title="Gesture Keyboard", layout="wide")
 
-# 2. Then inject CSS
+# Load custom CSS
 with open('styles/style.css', encoding='utf-8') as f:
     st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
 
-# 3. Then inject HTML
+# Load custom HTML
 with open('templates/header.html', encoding='utf-8') as f:
     st.markdown(f.read(), unsafe_allow_html=True)
 
-# 4. Now continue normally
+# Initialize Pygame only locally
+if not IS_DEPLOY:
+    pygame.mixer.init()
+
+def play_click_sound():
+    if not IS_DEPLOY:
+        pygame.mixer.music.load("click.mp3")
+        pygame.mixer.music.play()
+
 run = st.checkbox("Start Webcam")
 FRAME_WINDOW = st.image([])
 
@@ -35,21 +46,14 @@ keys = [
     ['SPACE_____', 'BACK_____', 'ENTER_____']
 ]
 
-key_width = 50
-key_height = 50
-keyboard_origin = (50, 250)
+key_width = 80
+key_height = 60
+keyboard_origin = (50, 300)
 typed_text = ""
 last_key_time = 0
 key_cooldown = 1.0  # seconds
 start_time = None
 keystroke_log = []
-
-# Sound
-pygame.mixer.init()
-
-def play_click_sound():
-    pygame.mixer.music.load("click.mp3")
-    pygame.mixer.music.play()
 
 def draw_keyboard(frame):
     x, y = keyboard_origin
@@ -108,33 +112,16 @@ def check_key_press(landmark, frame):
                 return key
     return None
 
-def custom_loading_spinner():
-    spinner_html = """
-    <div style="display: flex; justify-content: center; align-items: center; height: 150px;">
-        <div style="font-size: 30px; animation: bounce 1s infinite;">🖐️</div>
-    </div>
-
-    <style>
-    @keyframes bounce {
-      0%, 100% { transform: translateY(0); }
-      50% { transform: translateY(-20px); }
-    }
-    </style>
-    """
-    st.markdown(spinner_html, unsafe_allow_html=True)
-
-
+# Start webcam
 if run:
     placeholder = st.empty()
     with placeholder.container():
-        custom_loading_spinner()
-        time.sleep(2)  # simulate 2 seconds loading
-
-    placeholder.empty()  # Remove spinner after loading
+        st.markdown('<div style="text-align:center;"><h2>🖐️ Initializing Webcam... Please wait ⏳</h2></div>', unsafe_allow_html=True)
+        time.sleep(2)
+    placeholder.empty()
     st.success('Webcam Initialized! 🎥')
 
     cap = cv2.VideoCapture(0)
-
     while run:
         ret, frame = cap.read()
         if not ret:
