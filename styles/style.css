@@ -1,0 +1,27 @@
+body {
+    background-color: #f5f7fa;
+}
+
+.title {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: #0e76a8;
+    text-align: center;
+    margin-bottom: 10px;
+}
+
+.info-box {
+    background: linear-gradient(135deg, #00c3ff, #ffff1c);
+    padding: 15px;
+    border-radius: 15px;
+    margin: 20px;
+    text-align: center;
+    font-size: 20px;
+    font-weight: bold;
+}
+
+.footer {
+    text-align: center;
+    font-size: 14px;
+    color: gray;
+    margin-top: 50px;
+}
