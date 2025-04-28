@@ -4,7 +4,8 @@ import mediapipe as mp
 import numpy as np
 import time
 import threading
-from playsound import playsound
+import pygame
+
 
 # 1. First Command
 st.set_page_config(page_title="Gesture Keyboard", layout="wide")
@@ -44,8 +45,11 @@ start_time = None
 keystroke_log = []
 
 # Sound
+pygame.mixer.init()
+
 def play_click_sound():
-    threading.Thread(target=lambda: playsound("click.mp3"), daemon=True).start()
+    pygame.mixer.music.load("click.mp3")
+    pygame.mixer.music.play()
 
 def draw_keyboard(frame):
     x, y = keyboard_origin
