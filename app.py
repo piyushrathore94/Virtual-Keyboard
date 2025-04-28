@@ -46,9 +46,9 @@ keys = [
     ['SPACE_____', 'BACK_____', 'ENTER_____']
 ]
 
-key_width = 80
-key_height = 60
-keyboard_origin = (50, 300)
+key_width = 50
+key_height = 50
+keyboard_origin = (50, 250)
 typed_text = ""
 last_key_time = 0
 key_cooldown = 1.0  # seconds
